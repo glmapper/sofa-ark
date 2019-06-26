@@ -105,6 +105,10 @@ public class EventAdminServiceImpl implements EventAdminService, EventHandler {
 
     }
 
+    /**
+     * todo 这里只做了注销操作？
+     * @param event The event that occurred.
+     */
     @Override
     public void handleEvent(ArkEvent event) {
         if (!(event instanceof BizEvent)) {

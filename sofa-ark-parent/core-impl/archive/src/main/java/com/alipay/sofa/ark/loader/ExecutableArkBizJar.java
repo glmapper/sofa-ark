@@ -33,7 +33,7 @@ import static com.alipay.sofa.ark.spi.constant.Constants.CONF_BASE_DIR;
 
 /**
  * Executable Ark Biz Fat Jar
- *
+ * 可执行的 ark biz 包
  * @author qilong.zql
  * @since 0.1.0
  */

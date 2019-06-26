@@ -59,6 +59,11 @@ public class ArkClient {
         bizInstallDirectory = getBizInstallDirectory();
     }
 
+
+    /**
+     * 获取 biz 安装目录
+     * @return
+     */
     private static File getBizInstallDirectory() {
         File workingDir = FileUtils.createTempDir("sofa-ark");
         String configDir = ArkConfigs.getStringValue(Constants.CONFIG_INSTALL_BIZ_DIR);

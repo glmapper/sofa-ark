@@ -129,7 +129,9 @@ public class ArkContainer {
                     stop();
                 }
             }));
+            // 准备 ark 配置文件
             prepareArkConfig();
+            // 初始化 ark 自己的日志器
             reInitializeArkLogger();
             arkServiceContainer.start();
             Pipeline pipeline = arkServiceContainer.getService(Pipeline.class);

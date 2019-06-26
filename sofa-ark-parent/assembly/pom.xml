@@ -59,6 +59,7 @@
                 <configuration>
                     <finalName>${sofa.ark.name}</finalName>
                     <descriptors>
+                        <!-- 指定打包文件 src/assembly/src.xml，在该配置文件内指定打包操作 -->
                         <descriptor>src/main/assembly/assembly.xml</descriptor>
                     </descriptors>
                     <archive>

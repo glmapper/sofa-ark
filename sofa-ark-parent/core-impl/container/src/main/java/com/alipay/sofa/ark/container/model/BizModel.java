@@ -195,15 +195,19 @@ public class BizModel implements Biz {
 
     @Override
     public void start(String[] args) throws Throwable {
+        // 这里的 check 一下 当前 ark-biz 包的状态，必须是已经解析过的
         AssertUtils.isTrue(bizState == BizState.RESOLVED, "BizState must be RESOLVED");
         if (mainClass == null) {
             throw new ArkRuntimeException(String.format("biz: %s has no main method", getBizName()));
         }
 
+        // 将当前 classLoader 放入到线程上下文中，然后返回 线程上下文中的老的 classLoader
         ClassLoader oldClassLoader = ClassLoaderUtils.pushContextClassLoader(this.classLoader);
         try {
             resetProperties();
+            // 构建 MainMethodRunner
             MainMethodRunner mainMethodRunner = new MainMethodRunner(mainClass, args);
+            // 启动，里面通过 反射调用 main 方法的方式进行启动的
             mainMethodRunner.run();
             EventAdminService eventAdminService = ArkServiceContainerHolder.getContainer()
                 .getService(EventAdminService.class);
@@ -214,6 +218,7 @@ public class BizModel implements Biz {
             bizState = BizState.BROKEN;
             throw e;
         } finally {
+            // 将 oldClassLoader 设置回 线程上下文
             ClassLoaderUtils.popContextClassLoader(oldClassLoader);
         }
 
