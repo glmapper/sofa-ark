@@ -136,6 +136,7 @@ public class ClasspathLauncher extends ArkLauncher {
 
         @Override
         public List<PluginArchive> getPluginArchives() throws Exception {
+            // com/alipay/sofa/ark/plugin/mark
             List<URL> urlList = filterUrls(Constants.ARK_PLUGIN_MARK_ENTRY);
 
             List<PluginArchive> pluginArchives = new ArrayList<>();

@@ -72,8 +72,9 @@ public class HandleArchiveStage implements PipelineStage {
     @Override
     public void process(PipelineContext pipelineContext) throws ArkRuntimeException {
         try {
+            // 从 pipelineContext 中获取到 ExecutableArchive
             ExecutableArchive executableArchive = pipelineContext.getExecutableArchive();
-
+            // 获取到所有的 pluginArchives ,这里  ExecutableArchive 的具体实现是 ClassPathArchive
             for (PluginArchive pluginArchive : executableArchive.getPluginArchives()) {
                 Plugin plugin = pluginFactoryService.createPlugin(pluginArchive);
                 if (!isPluginExcluded(plugin)) {

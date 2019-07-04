@@ -25,6 +25,7 @@ import com.alipay.sofa.ark.sample.facade.SamplePluginService;
  * @since 0.1.0
  */
 public class SamplePluginServiceImpl implements SamplePluginService {
+
     @Override
     public String service() {
         return "I'm a sample plugin service published by ark-plugin";
