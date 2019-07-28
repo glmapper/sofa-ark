@@ -59,11 +59,16 @@ public class BizFactoryServiceImpl implements BizFactoryService {
     public Biz createBiz(BizArchive bizArchive) throws IOException {
         AssertUtils.isTrue(isArkBiz(bizArchive), "Archive must be a ark biz!");
         BizModel bizModel = new BizModel();
+        // 解析得到 Manifest 文件属性值
         Attributes manifestMainAttributes = bizArchive.getManifest().getMainAttributes();
         bizModel
+             // 设置状态为 resolver
             .setBizState(BizState.RESOLVED)
+                // 设置 bizName
             .setBizName(manifestMainAttributes.getValue(ARK_BIZ_NAME))
+                // 设置 bizVersion
             .setBizVersion(manifestMainAttributes.getValue(ARK_BIZ_VERSION))
+                // 设置mainClass
             .setMainClass(manifestMainAttributes.getValue(MAIN_CLASS_ATTRIBUTE))
             .setPriority(manifestMainAttributes.getValue(PRIORITY_ATTRIBUTE))
             .setWebContextPath(manifestMainAttributes.getValue(WEB_CONTEXT_PATH))
@@ -71,6 +76,7 @@ public class BizFactoryServiceImpl implements BizFactoryService {
             .setDenyImportClasses(manifestMainAttributes.getValue(DENY_IMPORT_CLASSES))
             .setDenyImportResources(manifestMainAttributes.getValue(DENY_IMPORT_RESOURCES))
             .setClassPath(bizArchive.getUrls())
+                // 设置 classLoader -> model 的 identity + biz 的 ucp(URLClassLoaderPath)
             .setClassLoader(
                 new BizClassLoader(bizModel.getIdentity(), getBizUcp(bizModel.getClassPath())));
         return bizModel;
@@ -84,6 +90,11 @@ public class BizFactoryServiceImpl implements BizFactoryService {
         return createBiz(bizArchive);
     }
 
+    /** 是否是 ark biz，通过 mark 标记判断
+     * 判断
+     * @param bizArchive
+     * @return
+     */
     private boolean isArkBiz(BizArchive bizArchive) {
         return bizArchive.isEntryExist(new Archive.EntryFilter() {
             @Override

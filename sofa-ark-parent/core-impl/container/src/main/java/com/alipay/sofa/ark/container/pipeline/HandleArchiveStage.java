@@ -77,7 +77,9 @@ public class HandleArchiveStage implements PipelineStage {
             // 获取到所有的 pluginArchives ,这里  ExecutableArchive 的具体实现是 ClassPathArchive
             for (PluginArchive pluginArchive : executableArchive.getPluginArchives()) {
                 Plugin plugin = pluginFactoryService.createPlugin(pluginArchive);
+                // 是否是激活
                 if (!isPluginExcluded(plugin)) {
+                    // 注册插件
                     pluginManagerService.registerPlugin(plugin);
                 } else {
                     LOGGER.warn(String.format("The plugin of %s is excluded.",
@@ -85,6 +87,7 @@ public class HandleArchiveStage implements PipelineStage {
                 }
             }
 
+            // 判断是不是使用了动态配置，支持使用zk 方式来推送命令
             if (useDynamicConfig()) {
                 AssertUtils.isFalse(
                     StringUtils.isEmpty(ArkConfigs.getStringValue(Constants.MASTER_BIZ)),
@@ -92,6 +95,7 @@ public class HandleArchiveStage implements PipelineStage {
             }
 
             int bizCount = 0;
+            //
             for (BizArchive bizArchive : executableArchive.getBizArchives()) {
                 Biz biz = bizFactoryService.createBiz(bizArchive);
                 if (bizArchive instanceof DirectoryBizArchive) {
@@ -135,11 +139,20 @@ public class HandleArchiveStage implements PipelineStage {
         }
     }
 
+    /**
+     * 判断该插件是不是不需要激活
+     * @param plugin
+     * @return
+     */
     public boolean isPluginExcluded(Plugin plugin) {
         String pluginName = plugin.getPluginName();
+        // 指定激活哪些插件，多个插件使用 ‘,’ 分隔；默认激活 Ark 包中所有的插件。
         String includePluginConf = ArkConfigs.getStringValue(PLUGIN_ACTIVE_INCLUDE);
+        // 指定排除哪些插件，多个插件使用 ‘,’ 分隔；默认为空
         String excludePluginConf = ArkConfigs.getStringValue(PLUGIN_ACTIVE_EXCLUDE);
+        // 指定需要激活的插件列表
         Set<String> includePlugins = StringUtils.strToSet(includePluginConf, COMMA_SPLIT);
+        // 指定排除的插件列表
         Set<String> excludePlugins = StringUtils.strToSet(excludePluginConf, COMMA_SPLIT);
         if (includePluginConf == null && excludePluginConf == null) {
             return false;
@@ -150,6 +163,11 @@ public class HandleArchiveStage implements PipelineStage {
         }
     }
 
+    /**
+     * 判断该biz是不是不需要激活
+     * @param biz
+     * @return
+     */
     public boolean isBizExcluded(Biz biz) {
         String bizIdentity = biz.getIdentity();
         String includeBizConf = ArkConfigs.getStringValue(BIZ_ACTIVE_INCLUDE);
